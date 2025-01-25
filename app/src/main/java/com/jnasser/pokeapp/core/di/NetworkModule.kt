@@ -1,6 +1,7 @@
 package com.jnasser.pokeapp.core.di
 
 import com.jnasser.pokeapp.BuildConfig
+import com.jnasser.pokeapp.core.requestManager.APIServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,4 +41,8 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
+    @Singleton
+    @Provides
+    fun provideAPIServices(retrofit: Retrofit) = retrofit.create(APIServices::class.java)
 }

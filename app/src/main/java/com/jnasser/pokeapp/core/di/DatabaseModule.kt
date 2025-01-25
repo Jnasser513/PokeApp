@@ -25,10 +25,4 @@ object DatabaseModule {
     @Singleton
     fun providePokemonDao(database: PokemonDB) = database.pokemonDao()
 
-    @Provides
-    @Singleton
-    fun provideRoomDataSource(pokemonDao: PokemonDAO): LocalPokemonDataSource {
-        return PokemonRoomDataSource(pokemonDao)
-    }
-
 }
