@@ -52,6 +52,16 @@ android {
             val baseUrl = getPropertyValue("BASE_URL")
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         }
+        debug {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            val baseUrl = getPropertyValue("BASE_URL")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

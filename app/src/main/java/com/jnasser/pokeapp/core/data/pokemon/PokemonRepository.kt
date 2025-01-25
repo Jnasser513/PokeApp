@@ -10,7 +10,7 @@ class PokemonRepository @Inject constructor(
 ) {
 
     suspend fun insertPokemons(pokemonList: List<PokemonResponse>): RoomResponse<List<Long>> {
-        val mappedPokemonList = pokemonList.toPokemonList()
+        val mappedPokemonList = pokemonList.toPokemonList2()
         return localPokemonDataSource.insertPokemonList(mappedPokemonList)
     }
 

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.jnasser.pokeapp.core.databaseManager.room.dao.PokemonDAO
 import com.jnasser.pokeapp.core.databaseManager.room.entity.PokemonEntity
 
@@ -11,6 +12,7 @@ import com.jnasser.pokeapp.core.databaseManager.room.entity.PokemonEntity
     version = 1,
     entities = [PokemonEntity::class]
 )
+@TypeConverters(Converters::class)
 abstract class PokemonDB: RoomDatabase() {
 
     abstract fun pokemonDao(): PokemonDAO

@@ -23,4 +23,4 @@ fun PokemonResponse.toPokemon() = Pokemon(
 
 fun List<Pokemon>.toPokemonEntityList() = map { it.toPokemonEntity() }
 fun List<PokemonEntity>.toPokemonList() = map { it.toPokemon() }
-fun List<PokemonResponse>.toPokemonList() = map { it.toPokemon() }
+fun List<PokemonResponse>.toPokemonList2() = map { it.toPokemon() }
