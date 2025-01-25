@@ -16,5 +16,5 @@ interface PokemonDAO {
     suspend fun getAllPokemons(): List<PokemonEntity>
 
     @Query("SELECT * FROM pokemon_table WHERE types = :type")
-    suspend fun searchPokemonByNameOrType(type: String): List<PokemonEntity>
+    suspend fun searchPokemonByType(type: String): List<PokemonEntity>
 }
