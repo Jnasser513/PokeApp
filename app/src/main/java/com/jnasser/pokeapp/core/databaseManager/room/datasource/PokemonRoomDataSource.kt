@@ -1,16 +1,14 @@
 package com.jnasser.pokeapp.core.databaseManager.room.datasource
 
-import com.jnasser.pokeapp.core.data.Pokemon
+import com.jnasser.pokeapp.core.data.pokemon.Pokemon
 import com.jnasser.pokeapp.core.data.RoomResponse
-import com.jnasser.pokeapp.core.data.toPokemonEntityList
-import com.jnasser.pokeapp.core.data.toPokemonList
+import com.jnasser.pokeapp.core.data.pokemon.toPokemonEntityList
+import com.jnasser.pokeapp.core.data.pokemon.toPokemonList
 import com.jnasser.pokeapp.core.databaseManager.room.dao.PokemonDAO
-import com.jnasser.pokeapp.core.databaseManager.room.entity.PokemonEntity
 import com.jnasser.pokeapp.core.domain.LocalPokemonDataSource
 import okio.IOException
-import javax.inject.Inject
 
-class PokemonRoomDataSource @Inject constructor(
+class PokemonRoomDataSource(
     private val pokemonDAO: PokemonDAO
 ): LocalPokemonDataSource {
 

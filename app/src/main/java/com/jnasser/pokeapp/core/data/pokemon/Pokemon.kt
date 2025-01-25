@@ -1,4 +1,4 @@
-package com.jnasser.pokeapp.core.data
+package com.jnasser.pokeapp.core.data.pokemon
 
 data class Pokemon(
     val name: String,

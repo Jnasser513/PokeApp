@@ -1,6 +1,6 @@
 package com.jnasser.pokeapp.core.domain
 
-import com.jnasser.pokeapp.core.data.Pokemon
+import com.jnasser.pokeapp.core.data.pokemon.Pokemon
 import com.jnasser.pokeapp.core.data.RoomResponse
 
 //Creamos una abstraccion en caso de ser necesario un cambio en la libreria de almacenamiento local
