@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="pokemon"
+            type="com.jnasser.pokeapp.core.data.pokemon.Pokemon" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -24,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginBottom="@dimen/minimum_gap"
+                android:text="@{pokemon.name}"
                 tools:text="Pikachu"
                 android:textSize="@dimen/default_text_size"
                 android:textColor="#FFFFFF"

@@ -34,16 +34,6 @@ class PokemonRoomDataSource(
         }
     }
 
-    override suspend fun searchPokemonByType(type: String): RoomResponse<List<Pokemon>> {
-        return try {
-            val pokemons = pokemonDAO.searchPokemonByType(type).toPokemonList()
-            if(pokemons.isNotEmpty()) RoomResponse.Success(pokemons)
-            else RoomResponse.EmptyList(pokemons)
-        } catch (e: IOException) {
-            RoomResponse.Error(e)
-        }
-    }
-
     override suspend fun getPokemonQuantity(): RoomResponse<Int> {
         return try {
             val pokemonQuantity = pokemonDAO.getPokemonQuantity()

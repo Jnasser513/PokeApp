@@ -8,7 +8,6 @@ interface LocalPokemonDataSource {
 
     suspend fun insertPokemonList(pokemonList: List<Pokemon>): RoomResponse<List<Long>>
     suspend fun getPokemonList(): RoomResponse<List<Pokemon>>
-    suspend fun searchPokemonByType(type: String): RoomResponse<List<Pokemon>>
     suspend fun getPokemonQuantity(): RoomResponse<Int>
 
 }
