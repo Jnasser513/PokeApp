@@ -6,7 +6,5 @@ data class PokemonResponse(
     @SerializedName("name")
     val name: String,
     @SerializedName("url")
-    val url: String,
-    @SerializedName("types")
-    val types: List<TypeResponse>
+    val url: String
 )

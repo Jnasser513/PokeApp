@@ -12,7 +12,6 @@ import com.jnasser.pokeapp.core.databaseManager.room.entity.PokemonEntity
     version = 1,
     entities = [PokemonEntity::class]
 )
-@TypeConverters(Converters::class)
 abstract class PokemonDB: RoomDatabase() {
 
     abstract fun pokemonDao(): PokemonDAO

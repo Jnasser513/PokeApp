@@ -3,4 +3,5 @@
     <string name="app_title">Pokedex</string>
     <string name="write_pokemon_number">Write pokemon number</string>
     <string name="search">Search</string>
+    <string name="update_pokemon_channel_name">update_pokemon</string>
 </resources>
