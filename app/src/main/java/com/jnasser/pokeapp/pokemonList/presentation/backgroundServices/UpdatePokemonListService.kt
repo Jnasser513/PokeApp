@@ -31,6 +31,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// Se decidio usar un foreground service y no un worker,
+// debido a que los worker estan diseñados para tareas recurrentes mayores a 15 minutos,
+// en este caso se requiere una actualizacion de datos cada 30 segundos,
+// por lo cual es mas recomendable usar un foreground service
+
 @AndroidEntryPoint
 class UpdatePokemonListService: Service() {
 
