@@ -106,9 +106,15 @@ dependencies {
     implementation(libs.okHttp)
     implementation(libs.okHttp.interceptor)
 
+    // Hilt
     implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
+
+    // Worker
     implementation(libs.hilt.worker)
-    kapt(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.worrManager)
 
     implementation(libs.viewmodel)
     implementation(libs.livedata)
@@ -122,8 +128,6 @@ dependencies {
 
     implementation(libs.navigation)
     implementation(libs.navigation.ui)
-
-    implementation(libs.worrManager)
 
     implementation(libs.glide)
     implementation(libs.glide.compiler)

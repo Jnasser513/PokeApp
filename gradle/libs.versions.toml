@@ -12,7 +12,7 @@ activity = "1.10.0"
 constraintlayout = "2.1.4"
 retrofit = "2.11.0"
 hilt = "2.52"
-hiltWorker = "1.2.0"
+hiltCompiler = "1.2.0"
 fragment = "1.8.5"
 androidxLifecycle = "2.8.7"
 room = "2.6.1"
@@ -38,8 +38,10 @@ gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", ve
 okHttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
 okHttp-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttp" }
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
-hilt-worker = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWorker" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCompiler" }
+androidx-hilt-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltCompiler" }
+hilt-worker = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltCompiler" }
 viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
 livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidxLifecycle" }
 lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }

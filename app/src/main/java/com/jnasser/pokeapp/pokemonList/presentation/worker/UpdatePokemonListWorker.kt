@@ -32,10 +32,10 @@ import kotlinx.coroutines.launch
 
 @HiltWorker
 class UpdatePokemonListWorker @AssistedInject constructor(
-    private val updatePokemonListManager: UpdatePokemonListManager,
-    //private val getPokemonQuantityUseCase: GetPokemonQuantityUseCase,
     @Assisted context: Context,
-    @Assisted params: WorkerParameters
+    @Assisted params: WorkerParameters,
+    private val updatePokemonListManager: UpdatePokemonListManager,
+    private val getPokemonQuantityUseCase: GetPokemonQuantityUseCase
 ) : CoroutineWorker(context, params) {
 
     private var workerScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
@@ -44,7 +44,7 @@ class UpdatePokemonListWorker @AssistedInject constructor(
     private var timerJob: Job? = null
 
     private val notificationManager by lazy {
-        context.getSystemService<NotificationManager>()!!
+        applicationContext.getSystemService<NotificationManager>()!!
     }
 
     private val baseNotification by lazy {
@@ -130,7 +130,7 @@ class UpdatePokemonListWorker @AssistedInject constructor(
     }
 
     private suspend fun updateNotification(status: Boolean) {
-        /*val pokemonQuantityResponse = getPokemonQuantityUseCase.invoke()
+        val pokemonQuantityResponse = getPokemonQuantityUseCase.invoke()
         var pokemonQuantityInserted = ""
 
         if (pokemonQuantityResponse is RoomResponse.Success) pokemonQuantityInserted =
@@ -143,7 +143,7 @@ class UpdatePokemonListWorker @AssistedInject constructor(
             ).setProgress(maxPokemonQuantity, pokemonQuantityInserted.toIntOrNull() ?: 0, !status)
             .build()
 
-        notificationManager.notify(NotificationUtils.UPDATE_POKEMON_NOTIFICATION_ID, notification)*/
+        notificationManager.notify(NotificationUtils.UPDATE_POKEMON_NOTIFICATION_ID, notification)
     }
 
     private suspend fun createNotificationChannel() {
