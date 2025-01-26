@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.GridLayoutManager
 import com.jnasser.pokeapp.databinding.FragmentPokemonListBinding
 
 class PokemonListFragment: Fragment() {
 
     private var mBinding: FragmentPokemonListBinding? = null
     private val binding get() = mBinding!!
+
+    private val pokemonListAdapter = PokemonListAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,6 +28,20 @@ class PokemonListFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initView()
+    }
+
+    private fun initView() {
+        setUpPokemonListRecyclerview()
+    }
+
+    private fun setUpPokemonListRecyclerview() {
+        binding.recyclerview.apply {
+            adapter = pokemonListAdapter
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            itemAnimator = DefaultItemAnimator()
+        }
     }
 
     override fun onDestroyView() {
