@@ -43,4 +43,13 @@ class PokemonRoomDataSource(
             RoomResponse.Error(e)
         }
     }
+
+    override suspend fun getPokemonQuantity(): RoomResponse<Int> {
+        return try {
+            val pokemonQuantity = pokemonDAO.getPokemonQuantity()
+            RoomResponse.Success(pokemonQuantity)
+        } catch (e: IOException) {
+            RoomResponse.Error(e)
+        }
+    }
 }

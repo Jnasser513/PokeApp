@@ -11,10 +11,8 @@ class PokemonRepository @Inject constructor(
     private val remotePokemonDataSource: RemotePokemonDataSource
 ) {
 
-    suspend fun insertPokemons(pokemonList: List<PokemonResponse>): RoomResponse<List<Long>> {
-        val mappedPokemonList = pokemonList.toPokemonList2()
-        return localPokemonDataSource.insertPokemonList(mappedPokemonList)
-    }
+    suspend fun insertPokemons(pokemonList: List<PokemonResponse>) =
+        localPokemonDataSource.insertPokemonList(pokemonList.toPokemonList2())
 
     suspend fun getAllPokemons() = localPokemonDataSource.getPokemonList()
 
@@ -22,5 +20,7 @@ class PokemonRepository @Inject constructor(
 
     suspend fun getRemotePokemonList(offset: Int, limit: Int) =
         remotePokemonDataSource.getPokemonList(offset, limit)
+
+    suspend fun getPokemonQuantity() = localPokemonDataSource.getPokemonQuantity()
 
 }

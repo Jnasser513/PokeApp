@@ -5,20 +5,17 @@ import com.jnasser.pokeapp.pokemonList.data.PokemonResponse
 
 fun PokemonEntity.toPokemon() = Pokemon(
     name = name,
-    url = url,
-    type = types
+    url = url
 )
 
 fun Pokemon.toPokemonEntity() = PokemonEntity(
     name = name,
-    url = url,
-    types = type
+    url = url
 )
 
 fun PokemonResponse.toPokemon() = Pokemon(
     name = name,
-    url = url,
-    type = types.map { it.name }
+    url = url
 )
 
 fun List<Pokemon>.toPokemonEntityList() = map { it.toPokemonEntity() }
