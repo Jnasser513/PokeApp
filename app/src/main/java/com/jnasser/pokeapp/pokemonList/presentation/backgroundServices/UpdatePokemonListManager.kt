@@ -22,7 +22,8 @@ class UpdatePokemonListManager @Inject constructor(
 
     suspend fun fetchAndInsertPokemonList(): UpdatePokemonListStatus {
         val offset = preference.lastPokemonInserted
-        return when(val response = getRemotePokemonListUseCase.invoke(offset, ApiConstants.PAGE_QUANTITY)) {
+        val pageQuantity = if (offset == 0) 15 else ApiConstants.PAGE_QUANTITY
+        return when(val response = getRemotePokemonListUseCase.invoke(offset, pageQuantity)) {
             is ApiResponse.EmptyList -> UpdatePokemonListStatus.Stop // Finalizamos el worker ya que no existen mas pokemon que insertar
             is ApiResponse.Error -> UpdatePokemonListStatus.Error
             is ApiResponse.Success -> {

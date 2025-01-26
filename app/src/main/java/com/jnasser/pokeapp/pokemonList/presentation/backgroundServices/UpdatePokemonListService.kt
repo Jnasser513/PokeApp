@@ -37,10 +37,13 @@ import javax.inject.Inject
 // por lo cual es mas recomendable usar un foreground service
 
 @AndroidEntryPoint
-class UpdatePokemonListService: Service() {
+class UpdatePokemonListService : Service() {
 
-    @Inject lateinit var updatePokemonListManager: UpdatePokemonListManager
-    @Inject lateinit var getPokemonQuantityUseCase: GetPokemonQuantityUseCase
+    @Inject
+    lateinit var updatePokemonListManager: UpdatePokemonListManager
+
+    @Inject
+    lateinit var getPokemonQuantityUseCase: GetPokemonQuantityUseCase
 
     private var serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
@@ -53,8 +56,7 @@ class UpdatePokemonListService: Service() {
 
     private val baseNotification by lazy {
         NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_pokeball)
-            .setContentTitle(getString(R.string.app_title))
+            .setSmallIcon(R.drawable.ic_pokeball).setContentTitle(getString(R.string.app_title))
     }
 
     private var maxPokemonQuantity: Int = 0
@@ -64,7 +66,7 @@ class UpdatePokemonListService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when(intent?.action) {
+        when (intent?.action) {
             ACTION_START -> start()
             ACTION_STOP -> stop()
         }
@@ -86,12 +88,9 @@ class UpdatePokemonListService: Service() {
                 addNextIntentWithParentStack(activityIntent)
                 getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
             }
-            val notification = baseNotification
-                .setContentText("Actualizando...")
-                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setOngoing(true)
-                .build()
+            val notification =
+                baseNotification.setContentText("Actualizando...").setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT).setOngoing(true).build()
 
             startForeground(NotificationUtils.UPDATE_POKEMON_NOTIFICATION_ID, notification)
             startTimer()
@@ -112,20 +111,24 @@ class UpdatePokemonListService: Service() {
     }
 
     private fun startTimer() {
-        if(timerJob == null) {
+        if (timerJob == null) {
             timerJob = serviceScope.launch {
-                while(true) {
-                    val resultInsertPokemonList = updatePokemonListManager.fetchAndInsertPokemonList()
+                while (true) {
+                    val resultInsertPokemonList =
+                        updatePokemonListManager.fetchAndInsertPokemonList()
 
-                    when(resultInsertPokemonList) {
-                        is UpdatePokemonListStatus.Continue -> maxPokemonQuantity = resultInsertPokemonList.count
-                        UpdatePokemonListStatus.Error -> {
-                            // Aqui podriamos informar de error en la insercion de datos
+                    when (resultInsertPokemonList) {
+                        is UpdatePokemonListStatus.Continue -> {
+                            maxPokemonQuantity = resultInsertPokemonList.count
+                            updateNotification(true)
                         }
+
+                        UpdatePokemonListStatus.Error -> {
+                            updateNotification(false)
+                        }
+
                         UpdatePokemonListStatus.Stop -> stop()
                     }
-
-                    updateNotification()
 
                     delay(DELAY_TIMER)
                 }
@@ -133,22 +136,26 @@ class UpdatePokemonListService: Service() {
         }
     }
 
-    private suspend fun updateNotification() {
+    private suspend fun updateNotification(status: Boolean) {
         val pokemonQuantityResponse = getPokemonQuantityUseCase.invoke()
         var pokemonQuantityInserted = ""
 
-        if(pokemonQuantityResponse is RoomResponse.Success) pokemonQuantityInserted = pokemonQuantityResponse.data.toString()
+        if (pokemonQuantityResponse is RoomResponse.Success) pokemonQuantityInserted =
+            pokemonQuantityResponse.data.toString()
         else pokemonQuantityInserted = "No se logro obtener los pokemon insertados"
 
         val notification = baseNotification
-            .setContentText("Descargados: $pokemonQuantityInserted / $maxPokemonQuantity")
+            .setContentText(
+                if (status) "Descargados: $pokemonQuantityInserted / $maxPokemonQuantity" else "Fallo la descarga de pokemons, verifica la coneccion a internet"
+            )
+            .setProgress(maxPokemonQuantity, pokemonQuantityInserted.toIntOrNull() ?: 0, false)
             .build()
 
         notificationManager.notify(NotificationUtils.UPDATE_POKEMON_NOTIFICATION_ID, notification)
     }
 
     private fun createNotificationChannel() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 getString(R.string.update_pokemon_channel_name),
