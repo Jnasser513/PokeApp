@@ -1,23 +1,34 @@
 package com.jnasser.pokeapp.pokemonList.presentation
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.jnasser.pokeapp.BuildConfig
 import com.jnasser.pokeapp.core.data.pokemon.Pokemon
+import com.jnasser.pokeapp.core.utils.extensions.hideView
 import com.jnasser.pokeapp.databinding.ItemPokemonBinding
 
-class PokemonListAdapter: RecyclerView.Adapter<PokemonListAdapter.PokemonListViewHolder>(), Filterable {
+class PokemonListAdapter : RecyclerView.Adapter<PokemonListAdapter.PokemonListViewHolder>(),
+    Filterable {
 
     private val pokemonList: MutableList<Pokemon> = mutableListOf()
     private val listFiltered: MutableList<Pokemon> = mutableListOf()
 
     //DiffUtil para calcular diferencias entre listas
     inner class PokemonListDiffCallback(
-        private val oldList: List<Pokemon>,
-        private val newList: List<Pokemon>
+        private val oldList: List<Pokemon>, private val newList: List<Pokemon>
     ) : DiffUtil.Callback() {
         override fun getOldListSize() = oldList.size
 
@@ -36,7 +47,40 @@ class PokemonListAdapter: RecyclerView.Adapter<PokemonListAdapter.PokemonListVie
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Pokemon) {
             binding.pokemon = item
-            binding.executePendingBindings()
+
+            val pokemonPosition = extractPokemonIdFromUrl(item.url)
+            Glide.with(binding.root.context)
+                .load("${BuildConfig.IMG_BASE_URL}$pokemonPosition.png")
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.progress.hideView()
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        binding.progress.hideView()
+                        return false
+                    }
+                })
+                .into(binding.pokemonImage)
+        }
+
+        private fun extractPokemonIdFromUrl(url: String): Int {
+            val idPattern = "(\\d+)/$".toRegex()
+            val matchResult = idPattern.find(url)
+            return matchResult?.groupValues?.get(1)?.toInt() ?: 0
         }
     }
 

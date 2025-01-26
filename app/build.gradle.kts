@@ -9,6 +9,20 @@ plugins {
     alias(libs.plugins.safeArgs)
 }
 
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+    javacOptions {
+        // Increase the max count of errors from annotation processors.
+        // Default is 100.
+        option("-Xmaxerrs", 500)
+    }
+}
+
+ksp {
+    arg("maxerrs", "500")
+}
+
 fun loadLocalProperties(file: File): Properties {
     val properties = Properties()
     if(file.exists()) {
@@ -50,7 +64,9 @@ android {
             )
 
             val baseUrl = getPropertyValue("BASE_URL")
+            val imgBaseURL = getPropertyValue("IMG_BASE_URL")
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "IMG_BASE_URL", "\"$imgBaseURL\"")
         }
         debug {
             isMinifyEnabled = false
@@ -60,7 +76,9 @@ android {
             )
 
             val baseUrl = getPropertyValue("BASE_URL")
+            val imgBaseURL = getPropertyValue("IMG_BASE_URL")
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "IMG_BASE_URL", "\"$imgBaseURL\"")
         }
     }
     compileOptions {
@@ -106,6 +124,9 @@ dependencies {
     implementation(libs.navigation.ui)
 
     implementation(libs.worrManager)
+
+    implementation(libs.glide)
+    implementation(libs.glide.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

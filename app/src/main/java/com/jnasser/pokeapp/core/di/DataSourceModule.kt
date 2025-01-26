@@ -10,6 +10,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Singleton
 
 @Module
@@ -18,8 +19,8 @@ object DataSourceModule {
 
     @Provides
     @Singleton
-    fun providePokemonRoomDataSource(pokemonDao: PokemonDAO): LocalPokemonDataSource {
-        return PokemonRoomDataSource(pokemonDao)
+    fun providePokemonRoomDataSource(@IoDispatcher iosDispatcher: CoroutineDispatcher, pokemonDao: PokemonDAO): LocalPokemonDataSource {
+        return PokemonRoomDataSource(iosDispatcher, pokemonDao)
     }
 
     @Provides

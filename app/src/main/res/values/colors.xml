@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primary_color">#99F57F17</color>
     <color name="secondary_color">#48CFAF</color>
+    <color name="third_color">#4C89D0</color>
 </resources>
