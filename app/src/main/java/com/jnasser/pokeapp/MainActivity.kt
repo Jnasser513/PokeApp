@@ -13,11 +13,17 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jnasser.pokeapp.core.presentation.PermissionHelper
 import com.jnasser.pokeapp.core.utils.extensions.showToast
 import com.jnasser.pokeapp.databinding.ActivityMainBinding
 import com.jnasser.pokeapp.pokemonList.presentation.backgroundServices.UpdatePokemonListService
+import com.jnasser.pokeapp.pokemonList.presentation.worker.UpdatePokemonListWorker
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         this@MainActivity,
         Manifest.permission.POST_NOTIFICATIONS,
         onGranted = {
-            startUpdatePokemonListService()
+            startUpdateWorker()
         },
         onDenied = {
             openSettingDevice()
@@ -57,7 +63,22 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         if (Build.VERSION.SDK_INT >= 33 && !isNotificationPermissionGranted()) notificationPermission.requestPermission()
-        else startUpdatePokemonListService()
+        else startUpdateWorker()
+    }
+
+    private fun startUpdateWorker() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val request = OneTimeWorkRequestBuilder<UpdatePokemonListWorker>()
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager
+            .getInstance(applicationContext)
+            .beginUniqueWork("update_worker", ExistingWorkPolicy.KEEP, request)
+            .enqueue()
     }
 
     private fun startUpdatePokemonListService() {
