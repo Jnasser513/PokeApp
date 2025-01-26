@@ -21,4 +21,6 @@ class PokemonRepository @Inject constructor(
     suspend fun getRemotePokemonList(offset: Int, limit: Int) =
         remotePokemonDataSource.getPokemonList(offset, limit)
 
+    suspend fun getPokemonQuantity() = localPokemonDataSource.getPokemonQuantity()
+
 }

@@ -28,8 +28,8 @@ class UpdatePokemonListManager @Inject constructor(
             is ApiResponse.Success -> {
                 response.data?.results?.let { pokemonList ->
                     insertPokemonList(pokemonList)
-                    UpdatePokemonListStatus.Continue
-                } ?: UpdatePokemonListStatus.Continue
+                    UpdatePokemonListStatus.Continue(response.data.count)
+                } ?: UpdatePokemonListStatus.Continue(response.data?.count ?: 0)
             }
         }
     }

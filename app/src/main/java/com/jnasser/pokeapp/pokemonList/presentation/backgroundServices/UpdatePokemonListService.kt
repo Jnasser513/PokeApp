@@ -2,6 +2,7 @@ package com.jnasser.pokeapp.pokemonList.presentation.backgroundServices
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,12 +11,15 @@ import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
 import androidx.core.content.getSystemService
 import androidx.work.ListenableWorker.Result
 import androidx.work.workDataOf
 import com.jnasser.pokeapp.MainActivity
 import com.jnasser.pokeapp.R
+import com.jnasser.pokeapp.core.data.RoomResponse
 import com.jnasser.pokeapp.core.data.utils.NotificationUtils
+import com.jnasser.pokeapp.core.usecases.GetPokemonQuantityUseCase
 import com.jnasser.pokeapp.pokemonList.data.UpdatePokemonListStatus
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +35,7 @@ import javax.inject.Inject
 class UpdatePokemonListService: Service() {
 
     @Inject lateinit var updatePokemonListManager: UpdatePokemonListManager
+    @Inject lateinit var getPokemonQuantityUseCase: GetPokemonQuantityUseCase
 
     private var serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
@@ -38,13 +43,16 @@ class UpdatePokemonListService: Service() {
     private var timerJob: Job? = null
 
     private val notificationManager by lazy {
-        getSystemService<NotificationManager>()
+        getSystemService<NotificationManager>()!!
     }
 
     private val baseNotification by lazy {
         NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setContentTitle("Descargando lista de pokemons")
+            .setSmallIcon(R.drawable.ic_pokeball)
+            .setContentTitle(getString(R.string.app_title))
     }
+
+    private var maxPokemonQuantity: Int = 0
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -64,14 +72,19 @@ class UpdatePokemonListService: Service() {
         if (!isServiceActive) {
             isServiceActive = true
 
-            // Crear el canal de notificación solo si el nivel de API es >= 26
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel()
-            }
+            createNotificationChannel()
 
+            val activityIntent = Intent(applicationContext, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }
+            val pendingIntent = TaskStackBuilder.create(applicationContext).run {
+                addNextIntentWithParentStack(activityIntent)
+                getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+            }
             val notification = baseNotification
                 .setContentText("Actualizando...")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT) // Esto solo se usa en < API 26
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setOngoing(true)
                 .build()
 
@@ -100,12 +113,14 @@ class UpdatePokemonListService: Service() {
                     val resultInsertPokemonList = updatePokemonListManager.fetchAndInsertPokemonList()
 
                     when(resultInsertPokemonList) {
-                        UpdatePokemonListStatus.Continue -> {}
+                        is UpdatePokemonListStatus.Continue -> maxPokemonQuantity = resultInsertPokemonList.count
                         UpdatePokemonListStatus.Error -> {
                             // Aqui podriamos informar de error en la insercion de datos
                         }
                         UpdatePokemonListStatus.Stop -> stop()
                     }
+
+                    updateNotification()
 
                     delay(DELAY_TIMER)
                 }
@@ -113,9 +128,18 @@ class UpdatePokemonListService: Service() {
         }
     }
 
-    private fun updateNotification() {
+    private suspend fun updateNotification() {
+        val pokemonQuantityResponse = getPokemonQuantityUseCase.invoke()
+        var pokemonQuantityInserted = ""
+
+        if(pokemonQuantityResponse is RoomResponse.Success) pokemonQuantityInserted = pokemonQuantityResponse.data.toString()
+        else pokemonQuantityInserted = "No se logro obtener los pokemon insertados"
+
         val notification = baseNotification
+            .setContentText("Descargados: $pokemonQuantityInserted / $maxPokemonQuantity")
             .build()
+
+        notificationManager.notify(NotificationUtils.UPDATE_POKEMON_NOTIFICATION_ID, notification)
     }
 
     private fun createNotificationChannel() {
@@ -123,9 +147,9 @@ class UpdatePokemonListService: Service() {
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 getString(R.string.update_pokemon_channel_name),
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_DEFAULT
             )
-            notificationManager?.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(channel)
         }
     }
 
@@ -138,13 +162,14 @@ class UpdatePokemonListService: Service() {
 
         private const val DELAY_TIMER = 30000L
 
+        // Intent para iniciar el service
         fun createStartIntent(context: Context): Intent {
-            Log.d("STARTSERVICEDONE 2", isServiceActive.toString())
             return Intent(context, UpdatePokemonListService::class.java).apply {
                 action = ACTION_START
             }
         }
 
+        // Intent para finalizar el service, en este caso se finaliza dentro del service
         fun createStopIntent(context: Context): Intent {
             return Intent(context, UpdatePokemonListService::class.java).apply {
                 action = ACTION_STOP

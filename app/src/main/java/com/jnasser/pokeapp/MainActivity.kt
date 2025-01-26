@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startUpdatePokemonListService() {
-        Log.d("STARTSERVICEDONE 1", UpdatePokemonListService.isServiceActive.toString())
         if(!UpdatePokemonListService.isServiceActive) {
             startService(
                 UpdatePokemonListService.createStartIntent(
