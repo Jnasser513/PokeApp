@@ -146,9 +146,10 @@ class UpdatePokemonListService : Service() {
 
         val notification = baseNotification
             .setContentText(
-                if (status) "Descargados: $pokemonQuantityInserted / $maxPokemonQuantity" else "Fallo la descarga de pokemons, verifica la coneccion a internet"
+                if (status) "Descargados: $pokemonQuantityInserted / $maxPokemonQuantity"
+                else "Fallo la descarga de pokemons, verifica la coneccion a internet"
             )
-            .setProgress(maxPokemonQuantity, pokemonQuantityInserted.toIntOrNull() ?: 0, false)
+            .setProgress(maxPokemonQuantity, pokemonQuantityInserted.toIntOrNull() ?: 0, !status)
             .build()
 
         notificationManager.notify(NotificationUtils.UPDATE_POKEMON_NOTIFICATION_ID, notification)
