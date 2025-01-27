@@ -101,6 +101,7 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.fragment.ktx)
 
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.gson.converter)
     implementation(libs.okHttp)
@@ -116,23 +117,35 @@ dependencies {
     implementation(libs.androidx.hilt.common)
     implementation(libs.worrManager)
 
+    // Architecture Components
     implementation(libs.viewmodel)
     implementation(libs.livedata)
     implementation(libs.lifecycle)
 
+    // Room
     ksp(libs.room)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
 
+    // Coroutines
     implementation(libs.coroutines)
 
+    // Navigation
     implementation(libs.navigation)
     implementation(libs.navigation.ui)
 
+    // Glide
     implementation(libs.glide)
     implementation(libs.glide.compiler)
 
+    // Testing
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockk.android)
+    testImplementation(libs.mockk.agent.jvm)
+    testImplementation(libs.mockWebServer)
+    testImplementation(libs.coroutines.test)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

@@ -58,8 +58,6 @@ class PokemonRoomDataSource(
         }
     }
 
-
-
     override suspend fun getPokemonQuantity(): RoomResponse<Int> {
         return try {
             val pokemonQuantity = pokemonDAO.getPokemonQuantity()
