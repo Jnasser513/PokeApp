@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">PokeApp</string>
+    <string name="app_title">Pokedex</string>
+    <string name="write_pokemon_name">Escribe el nombre del pokemon</string>
+    <string name="search">Search</string>
+    <string name="update_pokemon_channel_name">update_pokemon</string>
+    <string name="no_pokemons_saved">No se encontraron pokemons</string>
+    <string name="this_permission_is_necessary">Este permiso es necesario para el buen funcionameinto de la aplicacion</string>
+    <string name="necessary_permission">Permiso necesario</string>
+    <string name="positive_button_text">Ok</string>
+    <string name="negative_button_text">Cancelar</string>
 </resources>

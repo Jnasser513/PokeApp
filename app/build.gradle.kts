@@ -1,10 +1,40 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.safeArgs)
 }
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+    javacOptions {
+        // Increase the max count of errors from annotation processors.
+        // Default is 100.
+        option("-Xmaxerrs", 500)
+    }
+}
+
+ksp {
+    arg("maxerrs", "500")
+}
+
+fun loadLocalProperties(file: File): Properties {
+    val properties = Properties()
+    if(file.exists()) {
+        properties.load(file.inputStream())
+    }
+    return properties
+}
+
+val localPropertiesFile = rootProject.file("local.properties")
+val localProperties = loadLocalProperties(localPropertiesFile)
+
+private fun getPropertyValue(key: String) = localProperties.getProperty(key)
 
 android {
     namespace = "com.jnasser.pokeapp"
@@ -22,6 +52,7 @@ android {
 
     buildFeatures {
         dataBinding = true
+        buildConfig = true
     }
 
     buildTypes {
@@ -31,6 +62,23 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            val baseUrl = getPropertyValue("BASE_URL")
+            val imgBaseURL = getPropertyValue("IMG_BASE_URL")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "IMG_BASE_URL", "\"$imgBaseURL\"")
+        }
+        debug {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            val baseUrl = getPropertyValue("BASE_URL")
+            val imgBaseURL = getPropertyValue("IMG_BASE_URL")
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "IMG_BASE_URL", "\"$imgBaseURL\"")
         }
     }
     compileOptions {
@@ -58,24 +106,31 @@ dependencies {
     implementation(libs.okHttp)
     implementation(libs.okHttp.interceptor)
 
+    // Hilt
     implementation(libs.hilt)
-    implementation(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
+
+    // Worker
     implementation(libs.hilt.worker)
-    implementation(libs.hilt.annotation)
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.worrManager)
 
     implementation(libs.viewmodel)
     implementation(libs.livedata)
     implementation(libs.lifecycle)
 
-    implementation(libs.room)
+    ksp(libs.room)
     implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
 
     implementation(libs.coroutines)
 
     implementation(libs.navigation)
     implementation(libs.navigation.ui)
 
-    implementation(libs.worrManager)
+    implementation(libs.glide)
+    implementation(libs.glide.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
