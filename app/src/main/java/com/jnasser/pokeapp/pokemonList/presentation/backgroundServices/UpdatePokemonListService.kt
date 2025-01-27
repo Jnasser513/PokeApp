@@ -34,7 +34,8 @@ import javax.inject.Inject
 // Se decidio usar un foreground service y no un worker,
 // debido a que los worker estan diseñados para tareas recurrentes mayores a 15 minutos,
 // en este caso se requiere una actualizacion de datos cada 30 segundos,
-// por lo cual es mas recomendable usar un foreground service
+// por lo cual es mas recomendable usar un foreground service,
+// ademas que los services siguen activos a pesar de quitar la app de la pila de aplicaciones
 
 @AndroidEntryPoint
 class UpdatePokemonListService : Service() {
