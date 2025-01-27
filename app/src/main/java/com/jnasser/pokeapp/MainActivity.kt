@@ -23,7 +23,6 @@ import com.jnasser.pokeapp.core.presentation.PermissionHelper
 import com.jnasser.pokeapp.core.utils.extensions.showToast
 import com.jnasser.pokeapp.databinding.ActivityMainBinding
 import com.jnasser.pokeapp.pokemonList.presentation.backgroundServices.UpdatePokemonListService
-import com.jnasser.pokeapp.pokemonList.presentation.worker.UpdatePokemonListWorker
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         this@MainActivity,
         Manifest.permission.POST_NOTIFICATIONS,
         onGranted = {
-            startUpdateWorker()
+            startUpdatePokemonListService()
         },
         onDenied = {
             openSettingDevice()
@@ -63,22 +62,7 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         if (Build.VERSION.SDK_INT >= 33 && !isNotificationPermissionGranted()) notificationPermission.requestPermission()
-        else startUpdateWorker()
-    }
-
-    private fun startUpdateWorker() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val request = OneTimeWorkRequestBuilder<UpdatePokemonListWorker>()
-            .setConstraints(constraints)
-            .build()
-
-        WorkManager
-            .getInstance(applicationContext)
-            .beginUniqueWork("update_worker", ExistingWorkPolicy.KEEP, request)
-            .enqueue()
+        else startUpdatePokemonListService()
     }
 
     private fun startUpdatePokemonListService() {
